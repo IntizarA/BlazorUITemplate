@@ -6,7 +6,10 @@
 <div class="panel">
     <button type="button" class="btn btn-outline-danger" @onclick="ClearAll">Clear All</button>
     <button type="button" class="btn btn-outline-secondary" @onclick="ClearSelected">Remove Selected</button>
-</div>
+    @*
+    <i class="material-icons" type="button" @onclick="ClearSelected" style="font-size:48px;color:red">delete</i>
+    *@
+    </div>
 @code {
     
     private async Task ClearAll()
