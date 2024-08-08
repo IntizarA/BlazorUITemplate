@@ -1,6 +1,5 @@
 @using BlazorUITemplate.Data
 @using BlazorUITemplate.Pages
-<h3>ToolbarList</h3>
 <div class="toolbar-dropzone @dropClass"
      ondragover="event.preventDefault();"
      ondragstart="event.dataTransfer.setData('',event.target.id)"
@@ -28,7 +27,7 @@
 
     private void HandleDragEnter ()
     {
-        dropClass = "can-drop";
+        dropClass = "no-drop";
     }
 
     private void HandleDrop ()

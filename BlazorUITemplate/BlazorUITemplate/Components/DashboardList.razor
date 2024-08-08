@@ -1,6 +1,8 @@
 @using BlazorUITemplate.Data
+@using BlazorUITemplate.Enums
 @using BlazorUITemplate.Pages
-<h3>DashboardList</h3>
+@using BlazorUITemplate.Services
+@inject EventService EventService
 
 <div class="dashboard-dropzone @dropClass"
      ondragover="event.preventDefault();"
@@ -21,14 +23,39 @@
 
     string dropClass = "";
 
+    protected override void OnInitialized ()
+    {
+        EventService.OnClearAllClick += HandleClearAll;
+        EventService.OnRemoveSelectedClick += HandleRemoveSelected;
+    }
+
+    public void Dispose ()
+    {
+        EventService.OnClearAllClick -= HandleClearAll;
+        EventService.OnRemoveSelectedClick -= HandleRemoveSelected;
+    }
+
+    #region Event Handlers
+
     private void HandleDragEnter ()
     {
+        if (!Container.DraggedButton.IsDraggable)
+            return;
         dropClass = "can-drop";
     }
 
     private void HandleDrop ()
     {
-        Buttons.Add (Container.SelectedButton);
+        if (!Container.DraggedButton.IsDraggable)
+            return;
+        ButtonModel model = new ()
+        {
+            Id = Guid.NewGuid (),
+            IsDraggable = false,
+            ComponentType = ComponentType.Button,
+            Name = "Button " + new Random ().Next (0, 50)
+        };
+        Buttons.Add (model);
         dropClass = "";
     }
 
@@ -36,7 +63,23 @@
     {
         dropClass = "";
     }
-    [Parameter] public EventCallback<ButtonModel> OnDragStartEvent { get; set; }
 
-    
+    private async Task HandleClearAll ()
+    {
+        if (Container.Buttons != null)
+            Buttons.Clear ();
+        await InvokeAsync (StateHasChanged);
+    }
+
+    private async Task HandleRemoveSelected ()
+    {
+        ButtonModel? model=Buttons.FirstOrDefault (x => x.Id != null && x.Id == Container.ClickedButtonId);
+        if(model!=null)
+            Buttons.Remove (model);
+        await InvokeAsync (StateHasChanged);
+    }
+
+    #endregion
+
+
 }

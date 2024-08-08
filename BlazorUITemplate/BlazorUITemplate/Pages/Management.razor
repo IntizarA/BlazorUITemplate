@@ -3,8 +3,9 @@
 @using BlazorUITemplate.Data
 @using BlazorUITemplate.Enums
 
-<Container Buttons="Buttons" >
+<Container Buttons="Buttons">
     <ToolbarList ></ToolbarList>
+    <DeleteComponent></DeleteComponent>
     <DashboardList></DashboardList>
 </Container>
 
@@ -17,9 +18,10 @@
         {
             Buttons.Add (new ButtonModel ()
             {
-                Id = i,
-                ComponentType = ComponentType.Button
+                ComponentType = ComponentType.Button,
+                IsDraggable = true
             });
         }
     }
+
 }

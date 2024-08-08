@@ -1,9 +1,16 @@
 @using BlazorUITemplate.Data
 @using BlazorUITemplate.Pages
 
-<button class="draggable" draggable="true" @ondragstart="@(() => HandleDragStart (ButtonModel))">
-@ButtonModel.ComponentType.ToString()
-    </button>
+<button class="draggable" draggable="true" @onclick="@(() => HandleClick (ButtonModel))" @ondragstart="@(() => HandleDragStart (ButtonModel))">
+    @if (ButtonModel.Name == null)
+    {
+        @ButtonModel.ComponentType.ToString()
+    }
+    else
+    {
+        @ButtonModel.Name
+    }
+</button>
 
 @code {
     [CascadingParameter] Container Container { get; set; }
@@ -11,7 +18,12 @@
 
     private void HandleDragStart (ButtonModel selectedButtonModel)
     {
-        Container.SelectedButton = selectedButtonModel;
+        Container.DraggedButton = selectedButtonModel;
+    }
+
+    private void HandleClick (ButtonModel selectedButtonModel)
+    {
+        Container.ClickedButtonId = selectedButtonModel.Id;
     }
 
 }

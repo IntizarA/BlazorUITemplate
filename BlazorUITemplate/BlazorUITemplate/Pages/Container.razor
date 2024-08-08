@@ -9,7 +9,7 @@
 
 @code {
     [Parameter] public List<ButtonModel>? Buttons { get; set; }
-    [Parameter] public ButtonModel SelectedButton { get; set; }
+    [Parameter] public ButtonModel DraggedButton { get; set; }
+    [Parameter] public Guid? ClickedButtonId { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
-    
 }

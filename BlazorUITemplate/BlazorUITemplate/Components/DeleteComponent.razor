@@ -1,0 +1,26 @@
+@using BlazorUITemplate.Data
+@using BlazorUITemplate.Pages
+@using BlazorUITemplate.Services
+@inject EventService EventService
+<br/>
+<div class="panel">
+    <button type="button" class="btn btn-outline-danger" @onclick="ClearAll">Clear All</button>
+    <button type="button" class="btn btn-outline-secondary" @onclick="ClearSelected">Remove Selected</button>
+</div>
+@code {
+    
+    private async Task ClearAll()
+    {
+        await EventService.OnRaiseClearAllEvent();
+    }
+
+    private async Task ClearSelected()
+    {
+        await EventService.OnRaiseRemoveSelectedEvent ();
+        /*ButtonModel? model=Buttons.FirstOrDefault (x => x.Id != null && x.Id == Container.DraggedButton.Id);
+        if(model!=null)
+            Buttons.Remove (model);
+        // Implement your logic to clear selected buttons
+        Console.WriteLine("Selected buttons cleared");*/
+    }
+}
