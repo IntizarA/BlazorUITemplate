@@ -1,0 +1,44 @@
+@using BlazorUITemplate.Data
+@using BlazorUITemplate.Pages
+<h3>ToolbarList</h3>
+<div class="toolbar-dropzone @dropClass"
+     ondragover="event.preventDefault();"
+     ondragstart="event.dataTransfer.setData('',event.target.id)"
+     @ondrop="HandleDrop"
+     @ondragenter="HandleDragEnter"
+     @ondragleave="HandleDragLeave">
+
+    @foreach (var button in Buttons)
+    {
+        <ButtonComponent ButtonModel="@button"/>
+    }
+</div>
+
+@code {
+    [CascadingParameter] Container Container { get; set; }
+    List<ButtonModel> Buttons = new ();
+
+    string dropClass = "";
+
+    protected override void OnParametersSet ()
+    {
+        Buttons.Clear ();
+        Buttons.AddRange (Container.Buttons);
+    }
+
+    private void HandleDragEnter ()
+    {
+        dropClass = "can-drop";
+    }
+
+    private void HandleDrop ()
+    {
+        dropClass = "";
+    }
+
+    private void HandleDragLeave ()
+    {
+        dropClass = "";
+    }
+
+}

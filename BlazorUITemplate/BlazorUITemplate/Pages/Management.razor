@@ -1,0 +1,25 @@
+@page "/Management"
+@using BlazorUITemplate.Components
+@using BlazorUITemplate.Data
+@using BlazorUITemplate.Enums
+
+<Container Buttons="Buttons" >
+    <ToolbarList ></ToolbarList>
+    <DashboardList></DashboardList>
+</Container>
+
+@code {
+    public List<ButtonModel> Buttons = new ();
+
+    protected override void OnInitialized ()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            Buttons.Add (new ButtonModel ()
+            {
+                Id = i,
+                ComponentType = ComponentType.Button
+            });
+        }
+    }
+}

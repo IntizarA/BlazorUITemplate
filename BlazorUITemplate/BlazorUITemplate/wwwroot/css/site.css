@@ -1,0 +1,84 @@
+.component-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.component-status {
+    display: flex;
+    flex-direction: column;
+    width: 312px;
+}
+
+.component-status ul {
+    flex: 1;
+}
+.toolbar-dropzone{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #ccc;
+    height: 50px;
+}
+.dashboard-dropzone{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    background-color: #e9ecef;
+    min-height: calc(100vh - 60px);
+    box-sizing: border-box;
+}
+.dropzone {
+    padding: 30px;
+    border: 1px dashed #75868a;
+    list-style: none;
+}
+.dashboard{
+    width: 100%;
+    height: 500px;
+}
+
+.no-drop {
+    border: 2px dashed red;
+}
+
+.can-drop {
+    border: 2px dashed green;
+}
+
+.draggable {
+    margin-left: 10px;
+    /*padding: 10px 25px;*/
+    border: 1px solid #424d5c;
+    cursor: grab;
+    background: #5c6b7f;
+    color: #ffffff;
+    border-radius: 5px;
+    width: 150px;
+    height: 40px;
+}
+
+.draggable:active {
+    cursor: grabbing;
+}
+
+.dragging {
+    cursor: grabbing;
+}
+
+.description {
+    font-size: 18px;
+}
+
+.last-updated {
+    margin-bottom: 0;
+    font-size: 11px;
+    color: #e1e5ea;
+    font-weight: bold;
+}
+
+.last-updated small {
+    text-transform: uppercase;
+    color: #c4cbd4;
+    font-size: 11px;
+}

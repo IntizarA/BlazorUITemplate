@@ -1,0 +1,17 @@
+@using BlazorUITemplate.Data
+@using BlazorUITemplate.Pages
+
+<button class="draggable" draggable="true" @ondragstart="@(() => HandleDragStart (ButtonModel))">
+@ButtonModel.ComponentType.ToString()
+    </button>
+
+@code {
+    [CascadingParameter] Container Container { get; set; }
+    [Parameter] public ButtonModel ButtonModel { get; set; }
+
+    private void HandleDragStart (ButtonModel selectedButtonModel)
+    {
+        Container.SelectedButton = selectedButtonModel;
+    }
+
+}

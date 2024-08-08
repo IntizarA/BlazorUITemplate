@@ -1,0 +1,15 @@
+@using BlazorUITemplate.Data
+
+<CascadingValue Value="this">
+    @if (Buttons != null && Buttons.Any())
+    {
+        @ChildContent
+    }
+</CascadingValue>
+
+@code {
+    [Parameter] public List<ButtonModel>? Buttons { get; set; }
+    [Parameter] public ButtonModel SelectedButton { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    
+}
