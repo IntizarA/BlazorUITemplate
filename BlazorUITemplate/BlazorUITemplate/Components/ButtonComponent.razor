@@ -11,7 +11,10 @@
 else
 {
     <button class="@resizable" style="width:@Width; height:@Height;"
-            @onmousemove="OnMouseMove" @onmouseup="OnMouseUp">
+            @onmousemove="OnMouseMove" @onmouseup="OnMouseUp"
+            @onmouseleave="OnMouseMove"
+            @onmouseout="OnMouseMove"
+           >
             @ButtonModel.ComponentType.ToString()
         @if (CanResize)
         {
@@ -70,6 +73,7 @@ else
     {
         if (isResizing)
         {
+            Console.WriteLine("isResizing");
             double newWidth = startWidth;
             double newHeight = startHeight;
 
@@ -102,7 +106,8 @@ else
             Height = $"{newHeight}px";
             StateHasChanged();
         }
-    }
+    }  
+   
 
     private void OnMouseUp(MouseEventArgs e)
     {
