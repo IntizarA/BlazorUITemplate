@@ -4,14 +4,13 @@
 @inject EventService EventService
 @if (canDraggable)
 {
-<button class="@draggable" style="width:@Width; height:@Height;"
-        draggable="true" @onclick="@(() => HandleClick (ButtonModel))" @ondragstart="@(() => HandleDragStart (ButtonModel))">
+<button class="@draggable" draggable="true" @onclick="@(() => HandleClick (ButtonModel))" @ondragstart="@(() => HandleDragStart (ButtonModel))">
    Button
 </button>
 }
 else
 {
-    <button class="@resizable" style="width:@Width; height:@Height;"
+    <button class="dashboard-button @resizable" style="width:@Width; height:@Height;"
             @onmousemove="OnMouseMove" @onmouseup="OnMouseUp"
             @onmouseleave="OnMouseMove"
             @onmouseout="OnMouseMove"

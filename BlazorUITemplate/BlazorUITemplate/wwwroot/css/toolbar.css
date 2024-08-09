@@ -1,0 +1,13 @@
+.toolbar-dropzone{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #ccc;
+    height: 50px;
+}
+
+.no-drop {
+    border: 2px dashed red;
+}
+
