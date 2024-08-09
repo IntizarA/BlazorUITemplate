@@ -1,42 +1,64 @@
 @using BlazorUITemplate.Data
 @using BlazorUITemplate.Pages
 
-<button class="draggable @resizable" style="width:@Width; height:@Height;"
-        @onmousedown="OnMouseDown" @onmousemove="OnMouseMove" @onmouseup="OnMouseUp" 
+@if (canDraggable)
+{
+<button class="@draggable" style="width:@Width; height:@Height;"
         draggable="true" @onclick="@(() => HandleClick (ButtonModel))" @ondragstart="@(() => HandleDragStart (ButtonModel))">
-    @if (ButtonModel.Name == null)
-    {
-        @ButtonModel.ComponentType.ToString()
-    }
-    else
-    {
-        @ButtonModel.Name
-    }
+   Button
 </button>
+}
+else
+{
+    <button class="@resizable" style="width:@Width; height:@Height;"
+            @onmousemove="OnMouseMove" @onmouseup="OnMouseUp">
+            @ButtonModel.ComponentType.ToString()
+        @if (CanResize)
+        {
+            <div class="resizer top"          @onmousedown='(e) => StartResize(e, "top")'></div>
+            <div class="resizer right"        @onmousedown='(e) => StartResize(e, "right")'></div>
+            <div class="resizer bottom"       @onmousedown='(e) => StartResize(e, "bottom")'></div>
+            <div class="resizer left"         @onmousedown='(e) => StartResize(e, "left")'></div>
+            <div class="resizer top-left"     @onmousedown='(e) => StartResize(e, "top-left")'></div>
+            <div class="resizer top-right"    @onmousedown='(e) => StartResize(e, "top-right")'></div>
+            <div class="resizer bottom-left"  @onmousedown='(e) => StartResize(e, "bottom-left")'></div>
+            <div class="resizer bottom-right" @onmousedown='(e) => StartResize(e, "bottom-right")'></div>
+        }
+
+    </button>
+}
+
 
 @code {
-    
+
     #region Test Resize
 
     [Parameter] public RenderFragment ChildContent { get; set; }
     [Parameter] public string Width { get; set; } = "150px";
     [Parameter] public string Height { get; set; } = "40px";
+    [Parameter] public string resizable { get; set; } = "100px";
     [Parameter] public bool CanResize { get; set; } = true;
-    [Parameter] public string resizable { get; set; } = "";
+    private bool canDraggable = true;
     private bool isResizing = false;
+    private string currentResizer = "";
     private double startX, startY, startWidth, startHeight;
 
     protected override void OnInitialized ()
     {
+        canDraggable = ButtonModel.Id == null;
+        draggable=ButtonModel.Id == null ? "draggable" : "";
+        
         CanResize = ButtonModel.Id != null;
         resizable = ButtonModel.Id != null ? "resizable" : "";
     }
 
-    private void OnMouseDown(MouseEventArgs e)
+    
+    private void StartResize(MouseEventArgs e, string resizer)
     {
-        if (CanResize && e.ClientX >= (startWidth - 10) && e.ClientY >= (startHeight - 10))
+        if (CanResize)
         {
             isResizing = true;
+            currentResizer = resizer;
             startX = e.ClientX;
             startY = e.ClientY;
             startWidth = double.Parse(Width.Replace("px", ""));
@@ -48,8 +70,34 @@
     {
         if (isResizing)
         {
-            var newWidth = startWidth + (e.ClientX - startX);
-            var newHeight = startHeight + (e.ClientY - startY);
+            double newWidth = startWidth;
+            double newHeight = startHeight;
+
+            if (currentResizer.Contains("right"))
+            {
+                newWidth = startWidth + (e.ClientX - startX);
+            }
+            if (currentResizer.Contains("left"))
+            {
+                newWidth = startWidth - (e.ClientX - startX);
+                if (newWidth > 0)
+                {
+                    Width = $"{newWidth}px";
+                }
+            }
+            if (currentResizer.Contains("bottom"))
+            {
+                newHeight = startHeight + (e.ClientY - startY);
+            }
+            if (currentResizer.Contains("top"))
+            {
+                newHeight = startHeight - (e.ClientY - startY);
+                if (newHeight > 0)
+                {
+                    Height = $"{newHeight}px";
+                }
+            }
+
             Width = $"{newWidth}px";
             Height = $"{newHeight}px";
             StateHasChanged();
@@ -59,13 +107,15 @@
     private void OnMouseUp(MouseEventArgs e)
     {
         isResizing = false;
+        currentResizer = "";
     }
-
-
     #endregion
-    
+
     [CascadingParameter] Container Container { get; set; }
     [Parameter] public ButtonModel ButtonModel { get; set; }
+    [Parameter] public string draggable { get; set; }
+    
+    
 
     private void HandleDragStart (ButtonModel selectedButtonModel)
     {
