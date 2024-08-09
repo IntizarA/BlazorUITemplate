@@ -10,8 +10,8 @@
 }
 else
 {
-    <button class="dashboard-button @resizable" style="width:@Width; height:@Height;"
-            @onmousemove="OnMouseMove" @onmouseup="OnMouseUp"
+    <button class="dashboard-button @resizable" style="width:@Width; height:@Height; background-color: @buttonColor"
+            @onmousemove="OnMouseMove" 
             @onmouseleave="OnMouseMove"
             @onmouseout="OnMouseMove"
            >
@@ -34,6 +34,8 @@ else
 
 @code {
 
+    private ElementReference buttonRef;
+    private string buttonColor;
     #region Test Resize
 
     [Parameter] public RenderFragment ChildContent { get; set; }
@@ -48,6 +50,7 @@ else
 
     protected override void OnInitialized ()
     {
+        buttonColor = ColorGenerator.GenerateRandomColor();
         EventService.OnMouseUp += HandleGlobalMouseUpEvent;
         canDraggable = ButtonModel.Id == null;
         draggable=ButtonModel.Id == null ? "draggable" : "";

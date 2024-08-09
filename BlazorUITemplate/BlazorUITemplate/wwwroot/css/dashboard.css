@@ -1,9 +1,10 @@
+
 .dashboard-dropzone{
     display: flex;
     flex-wrap: wrap;
     padding: 10px;
     background-color: #e9ecef;
-    min-height: calc(100vh - 60px);
+    min-height: 100px;
     box-sizing: border-box;
 }
 

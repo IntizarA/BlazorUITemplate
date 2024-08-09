@@ -15,6 +15,7 @@
     {
         <ButtonComponent ButtonModel="@button"/>
     }
+    
 </div>
 
 @code {
@@ -57,6 +58,7 @@
         };
         Buttons.Add (model);
         dropClass = "";
+        StateHasChanged ();
     }
 
     private void HandleDragLeave ()
