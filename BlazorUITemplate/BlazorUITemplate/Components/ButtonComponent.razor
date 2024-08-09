@@ -1,7 +1,9 @@
 @using BlazorUITemplate.Data
 @using BlazorUITemplate.Pages
 
-<button class="draggable" draggable="true" @onclick="@(() => HandleClick (ButtonModel))" @ondragstart="@(() => HandleDragStart (ButtonModel))">
+<button class="draggable @resizable" style="width:@Width; height:@Height;"
+        @onmousedown="OnMouseDown" @onmousemove="OnMouseMove" @onmouseup="OnMouseUp" 
+        draggable="true" @onclick="@(() => HandleClick (ButtonModel))" @ondragstart="@(() => HandleDragStart (ButtonModel))">
     @if (ButtonModel.Name == null)
     {
         @ButtonModel.ComponentType.ToString()
@@ -13,6 +15,55 @@
 </button>
 
 @code {
+    
+    #region Test Resize
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string Width { get; set; } = "150px";
+    [Parameter] public string Height { get; set; } = "40px";
+    [Parameter] public bool CanResize { get; set; } = true;
+    [Parameter] public string resizable { get; set; } = "";
+    private bool isResizing = false;
+    private double startX, startY, startWidth, startHeight;
+
+    protected override void OnInitialized ()
+    {
+        CanResize = ButtonModel.Id != null;
+        resizable = ButtonModel.Id != null ? "resizable" : "";
+    }
+
+    private void OnMouseDown(MouseEventArgs e)
+    {
+        if (CanResize && e.ClientX >= (startWidth - 10) && e.ClientY >= (startHeight - 10))
+        {
+            isResizing = true;
+            startX = e.ClientX;
+            startY = e.ClientY;
+            startWidth = double.Parse(Width.Replace("px", ""));
+            startHeight = double.Parse(Height.Replace("px", ""));
+        }
+    }
+
+    private void OnMouseMove(MouseEventArgs e)
+    {
+        if (isResizing)
+        {
+            var newWidth = startWidth + (e.ClientX - startX);
+            var newHeight = startHeight + (e.ClientY - startY);
+            Width = $"{newWidth}px";
+            Height = $"{newHeight}px";
+            StateHasChanged();
+        }
+    }
+
+    private void OnMouseUp(MouseEventArgs e)
+    {
+        isResizing = false;
+    }
+
+
+    #endregion
+    
     [CascadingParameter] Container Container { get; set; }
     [Parameter] public ButtonModel ButtonModel { get; set; }
 

@@ -84,4 +84,28 @@
 }
 
 
+/*test*/
+
+.resizable {
+    position: relative;
+    border: 1px solid #000;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    background-color: lightgrey;
+}
+
+.resizer {
+    width: 10px;
+    height: 10px;
+    background: #000;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    cursor: se-resize;
+}
 
