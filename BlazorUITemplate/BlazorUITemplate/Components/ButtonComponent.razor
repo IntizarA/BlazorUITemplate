@@ -1,6 +1,7 @@
 @using BlazorUITemplate.Data
 @using BlazorUITemplate.Pages
-
+@using BlazorUITemplate.Services
+@inject EventService EventService
 @if (canDraggable)
 {
 <button class="@draggable" style="width:@Width; height:@Height;"
@@ -48,6 +49,7 @@ else
 
     protected override void OnInitialized ()
     {
+        EventService.OnMouseUp += HandleGlobalMouseUpEvent;
         canDraggable = ButtonModel.Id == null;
         draggable=ButtonModel.Id == null ? "draggable" : "";
         
@@ -55,7 +57,13 @@ else
         resizable = ButtonModel.Id != null ? "resizable" : "";
     }
 
-    
+    public void Dispose ()
+    {
+        EventService.OnMouseUp -= HandleGlobalMouseUpEvent;
+    }
+
+
+
     private void StartResize(MouseEventArgs e, string resizer)
     {
         if (CanResize)
@@ -114,6 +122,14 @@ else
         isResizing = false;
         currentResizer = "";
     }
+
+    private void HandleGlobalMouseUpEvent (MouseEventArgs eventArgs)
+    {
+        Console.WriteLine ("Global Mouse Up Detected");
+        isResizing = false;
+        currentResizer = "";
+    }
+
     #endregion
 
     [CascadingParameter] Container Container { get; set; }
@@ -131,5 +147,7 @@ else
     {
         Container.ClickedButtonId = selectedButtonModel.Id;
     }
+    
+    
 
 }

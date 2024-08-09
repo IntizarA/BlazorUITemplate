@@ -1,6 +1,9 @@
-﻿@using BlazorUITemplate.Pages
+﻿@using BlazorUITemplate.Services
 @inherits LayoutComponentBase
-<div class="page">
+@inject EventService EventService
+
+
+<div class="page" @onmouseup="HandleMouseUp" @onmouseleave="HandleMouseUp">
     <div class="sidebar">
         <NavMenu/>
     </div>
@@ -11,3 +14,12 @@
         </article>
     </main>
 </div>
+
+@code
+{
+
+    private void HandleMouseUp(MouseEventArgs eventArgs)
+    {
+        EventService.OnMouseUpEvent (eventArgs);
+    }
+}

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Components.Web;
+
 namespace BlazorUITemplate.Services;
 
 public class EventService
@@ -5,18 +7,40 @@ public class EventService
 	public event Func<Task> OnClearAllClick;
 	public event Func<Task> OnRemoveSelectedClick;
 
+	public event Action<MouseEventArgs> OnMouseUp;
+
 	public async Task OnRaiseClearAllEvent ()
 	{
-		if (OnClearAllClick != null)
+		try
 		{
-			await OnClearAllClick.Invoke ();
+			if (OnClearAllClick != null)
+			{
+				await OnClearAllClick.Invoke ();
+			}
+		}
+		catch (Exception exception)
+		{
+			Console.WriteLine (exception.Message);
 		}
 	}
+
 	public async Task OnRaiseRemoveSelectedEvent ()
 	{
-		if (OnRemoveSelectedClick != null)
+		try
 		{
-			await OnRemoveSelectedClick.Invoke ();
+			if (OnRemoveSelectedClick != null)
+			{
+				await OnRemoveSelectedClick.Invoke ();
+			}
 		}
+		catch (Exception exception)
+		{
+			Console.WriteLine (exception.Message);
+		}
+	}
+
+	public void OnMouseUpEvent (MouseEventArgs eventArgs)
+	{
+		OnMouseUp.Invoke (eventArgs);
 	}
 }
