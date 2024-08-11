@@ -1,4 +1,5 @@
 @using BlazorUITemplate.Data
+@using BlazorUITemplate.Enums
 
 <CascadingValue Value="this">
     @if (Buttons != null && Buttons.Any())
@@ -9,7 +10,14 @@
 
 @code {
     [Parameter] public List<ButtonModel>? Buttons { get; set; }
+    [Parameter] public List<InputModel>? Inputs { get; set; }
+    [Parameter] public List<ImageModel>? Images { get; set; }
+    
+    public ComponentType DraggingType { get; set; }
     [Parameter] public ButtonModel DraggedButton { get; set; }
+    [Parameter] public InputModel DraggedInput { get; set; }
+    [Parameter] public ImageModel DraggedImage { get; set; }
+    
     [Parameter] public Guid? ClickedButtonId { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
 }

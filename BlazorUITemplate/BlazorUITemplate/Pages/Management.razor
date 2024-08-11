@@ -3,25 +3,55 @@
 @using BlazorUITemplate.Data
 @using BlazorUITemplate.Enums
 
-<Container Buttons="Buttons">
-    <ToolbarList ></ToolbarList>
+<Container Buttons="Buttons" Inputs="Inputs" Images="Images">
+    <ToolbarList></ToolbarList>
     <DeleteComponent></DeleteComponent>
     <DashboardList></DashboardList>
 </Container>
 
 @code {
-    public List<ButtonModel> Buttons = new ();
+    public List<ButtonModel> Buttons { get; set; } = new();
+    public List<InputModel> Inputs { get; set; } = new();
+    public List<ImageModel> Images { get; set; } = new();
 
-    protected override void OnInitialized ()
+    protected override void OnInitialized()
     {
-        for (int i = 0; i < 2; i++)
-        {
-            Buttons.Add (new ButtonModel ()
-            {
-                ComponentType = ComponentType.Button,
-                IsDraggable = true
-            });
-        }
+        Buttons = InitializeButtons();
+        Inputs = InitializeInputs();
+        Images = InitializeImages();
     }
 
+    private List<ButtonModel> InitializeButtons() => new List<ButtonModel>
+    {
+        new ButtonModel
+        {
+            Name = "Yellow",
+            IsDraggable = true,
+            ButtonColor = ButtonColor.Yellow
+        },
+        new ButtonModel
+        {
+            Name = "Blue",
+            IsDraggable = true,
+            ButtonColor = ButtonColor.Blue
+        }
+    };
+
+    private List<InputModel> InitializeInputs() => new List<InputModel>
+    {
+        new InputModel
+        {
+            IsDraggable = true,
+            Placeholder = "Input"
+        }
+    };
+
+    private List<ImageModel> InitializeImages() => new List<ImageModel>
+    {
+        new ImageModel
+        {
+            IsDraggable = true,
+            Url = "BlazorUITemplate/wwwroot/icon-192.png"
+        }
+    };
 }

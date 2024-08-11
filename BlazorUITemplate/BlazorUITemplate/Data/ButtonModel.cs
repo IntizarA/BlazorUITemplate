@@ -2,10 +2,8 @@ using BlazorUITemplate.Enums;
 
 namespace BlazorUITemplate.Data;
 
-public class ButtonModel
+public class ButtonModel:BaseModel
 {
-	public Guid? Id { get; set; }
 	public string? Name { get; set; }
-	public ComponentType ComponentType { get; set; }
-	public bool IsDraggable { get; set; }
+	public ButtonColor ButtonColor { get; set; }
 }

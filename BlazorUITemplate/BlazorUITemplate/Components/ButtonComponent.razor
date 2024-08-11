@@ -1,21 +1,25 @@
 @using BlazorUITemplate.Data
+@using BlazorUITemplate.Enums
 @using BlazorUITemplate.Pages
 @using BlazorUITemplate.Services
 @inject EventService EventService
 @if (canDraggable)
 {
-<button class="@draggable" draggable="true" @onclick="@(() => HandleClick (ButtonModel))" @ondragstart="@(() => HandleDragStart (ButtonModel))">
+    <button class="@draggable" draggable="true" 
+            @onclick="@(() => HandleClick (ButtonModel))" 
+            @ondragstart="@(() => HandleDragStart (ButtonModel))">
    Button
 </button>
 }
 else
 {
-    <button class="dashboard-button @resizable" style="width:@Width; height:@Height; background-color: @buttonColor"
+    <button class="dashboard-button @resizable" 
+            style="width:@Width; height:@Height; background-color: @buttonColor"
             @onmousemove="OnMouseMove" 
             @onmouseleave="OnMouseMove"
             @onmouseout="OnMouseMove"
            >
-            @ButtonModel.ComponentType.ToString()
+            @ButtonModel.Name
         @if (CanResize)
         {
             <div class="resizer top"          @onmousedown='(e) => StartResize(e, "top")'></div>
@@ -142,6 +146,7 @@ else
 
     private void HandleDragStart (ButtonModel selectedButtonModel)
     {
+        Container.DraggingType = ComponentType.Button;
         Container.DraggedButton = selectedButtonModel;
     }
 

@@ -15,12 +15,19 @@
     {
         <ButtonComponent ButtonModel="@button"/>
     }
-    
+
+    @foreach (var input in Inputs)
+    {
+        <InputComponent InputModel="@input"/>
+    }
+
 </div>
 
 @code {
     [CascadingParameter] Container Container { get; set; }
     List<ButtonModel> Buttons = new ();
+    List<InputModel> Inputs = new ();
+    List<ImageModel> Images = new ();
 
     string dropClass = "";
 
@@ -40,24 +47,65 @@
 
     private void HandleDragEnter ()
     {
-        if (!Container.DraggedButton.IsDraggable)
-            return;
-        dropClass = "can-drop";
+        
+        switch (Container)
+        {
+            case { DraggingType: ComponentType.Button, DraggedButton.IsDraggable: false }:
+            case { DraggingType: ComponentType.Input, DraggedInput.IsDraggable: false }:
+            case { DraggingType: ComponentType.Image, DraggedImage.IsDraggable: false }:
+                return;
+            default:
+                dropClass = "can-drop";
+                break;
+        }
     }
 
     private void HandleDrop ()
     {
-        if (!Container.DraggedButton.IsDraggable)
-            return;
-        ButtonModel model = new ()
+        switch (Container.DraggingType)
         {
-            Id = Guid.NewGuid (),
-            IsDraggable = false,
-            ComponentType = ComponentType.Button,
-            Name = "Button " + new Random ().Next (0, 50)
-        };
-        Buttons.Add (model);
-        dropClass = "";
+            case ComponentType.Button:
+                if (!Container.DraggedButton.IsDraggable)
+                    return;
+                ButtonModel buttonModel = new ()
+                {
+                    Id = Guid.NewGuid (),
+                    IsDraggable = false,
+                    Name = Container.DraggedButton.Name,
+                    ButtonColor = Container.DraggedButton.ButtonColor
+                };
+                Buttons.Add (buttonModel);
+                break;
+            case ComponentType.Input:
+                if (!Container.DraggedInput.IsDraggable)
+                    return;
+                InputModel inputModel = new ()
+                {
+                    Id = Guid.NewGuid (),
+                    IsDraggable = false,
+                    Placeholder = Container.DraggedInput.Placeholder
+                };
+                Inputs.Add (inputModel);
+
+                break;
+            case ComponentType.Image:
+
+                if (!Container.DraggedImage.IsDraggable)
+                    return;
+                ImageModel imageModel = new ()
+                {
+                    Id = Guid.NewGuid (),
+                    IsDraggable = false,
+                    Url = Container.DraggedImage.Url
+                };
+                Images.Add (imageModel);
+                break;
+            default:
+                dropClass = "";
+                break;
+        }
+
+       
         StateHasChanged ();
     }
 
@@ -75,8 +123,8 @@
 
     private async Task HandleRemoveSelected ()
     {
-        ButtonModel? model=Buttons.FirstOrDefault (x => x.Id != null && x.Id == Container.ClickedButtonId);
-        if(model!=null)
+        ButtonModel? model = Buttons.FirstOrDefault (x => x.Id != null && x.Id == Container.ClickedButtonId);
+        if (model != null)
             Buttons.Remove (model);
         await InvokeAsync (StateHasChanged);
     }

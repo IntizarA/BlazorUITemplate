@@ -1,3 +1,22 @@
+.dashboard-input {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #424d5c;
+    background-color: #5c6b7f;
+    color: #ffffff;
+    border-radius: 5px;
+    width: 150px;
+    height: 40px;
+}
+
+.dashboard-input:focus,
+.dashboard-input:active {
+    box-shadow: 0 0 0 3px #1b6ec2;
+}
+
+
 /*drag-drop*/
 
 .draggable {
@@ -37,8 +56,6 @@
 
 
 /*resize*/
-
-
 .resizable {
     position: relative;
     display: inline-block;

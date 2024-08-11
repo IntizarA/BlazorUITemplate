@@ -11,11 +11,17 @@
     {
         <ButtonComponent ButtonModel="@button"/>
     }
+    @foreach (var input in Inputs)
+    {
+        <InputComponent InputModel="@input"/>
+    }
 </div>
 
 @code {
     [CascadingParameter] Container Container { get; set; }
     List<ButtonModel> Buttons = new ();
+    List<InputModel> Inputs = new ();
+    List<ImageModel> Images = new ();
 
     string dropClass = "";
 
@@ -23,6 +29,8 @@
     {
         Buttons.Clear ();
         Buttons.AddRange (Container.Buttons);
+        Inputs.Clear ();
+        Inputs.AddRange (Container.Inputs);
     }
 
     private void HandleDragEnter ()
