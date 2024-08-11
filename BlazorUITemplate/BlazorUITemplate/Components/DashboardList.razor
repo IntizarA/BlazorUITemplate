@@ -20,6 +20,11 @@
     {
         <InputComponent InputModel="@input"/>
     }
+    
+    @foreach (var image in Images)
+    {
+        <ImageComponent ImageModel="@image"/>
+    }
 
 </div>
 
@@ -56,7 +61,6 @@
             return;
         if (!Container.DraggingComponent.IsDraggable)
             return;
-
         switch (Container.DraggingComponent)
         {
             case ButtonModel buttonModel:
@@ -80,7 +84,9 @@
                 {
                     Id = Guid.NewGuid (),
                     IsDraggable = false,
-                    Placeholder = inputModel.Placeholder
+                    Placeholder = inputModel.Placeholder,
+                    Width = inputModel.Width,
+                    Height = inputModel.Height
                 };
                 Inputs.Add (copy);
                 break;
@@ -91,7 +97,9 @@
                 {
                     Id = Guid.NewGuid (),
                     IsDraggable = false,
-                    Url = imageModel.Url
+                    Url = imageModel.Url,
+                    Width = imageModel.Width,
+                    Height = imageModel.Height
                 };
                 Images.Add (copy);
                 break;

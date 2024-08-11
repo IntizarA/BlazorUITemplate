@@ -1,5 +1,68 @@
-﻿<h3>ImageComponent</h3>
+﻿@using BlazorUITemplate.Data
+@using BlazorUITemplate.Enums
+@using BlazorUITemplate.Pages
+@using BlazorUITemplate.Services
+@inject EventService EventService
+@inherits BaseComponent
+
+@if (ImageModel.Id == null)
+{
+    <img src="@ImageModel.Url"  class="form-control draggable" draggable="true"
+         style="width:@ImageModel.Width; height:@ImageModel.Height;"
+         @ondragstart="@(() => OnDragStart())"
+         disabled />
+}
+else
+{
+    <div class="image-parent resizable"
+         style="width:@ImageModel.Width; height:@ImageModel.Height;"
+         @onclick="@(() => OnClick())"
+         @onmousemove="OnMouseMove"
+         @onmouseleave="OnMouseMove"
+         @onmouseout="OnMouseMove">
+        <img src="@ImageModel.Url"
+             style="width:@ImageModel.Width; height:@ImageModel.Height;" draggable="false"/>
+        
+        <div class="resizer top" @onmousedown='(e) => StartResize(e, "top")'></div>
+        <div class="resizer right" @onmousedown='(e) => StartResize(e, "right")'></div>
+        <div class="resizer bottom" @onmousedown='(e) => StartResize(e, "bottom")'></div>
+        <div class="resizer left" @onmousedown='(e) => StartResize(e, "left")'></div>
+        <div class="resizer top-left" @onmousedown='(e) => StartResize(e, "top-left")'></div>
+        <div class="resizer top-right" @onmousedown='(e) => StartResize(e, "top-right")'></div>
+        <div class="resizer bottom-left" @onmousedown='(e) => StartResize(e, "bottom-left")'></div>
+        <div class="resizer bottom-right" @onmousedown='(e) => StartResize(e, "bottom-right")'></div>
+    </div>
+}
 
 @code {
+
+    [Parameter] public ImageModel ImageModel { get; set; }
     
+    private void StartResize(MouseEventArgs eventArgs, string resizer)
+    {
+        Resize(eventArgs, resizer, ImageModel.Width, ImageModel.Height);
+    }
+
+    private void OnMouseMove(MouseEventArgs eventArgs)
+    {
+        var sizes = MouseMove(eventArgs, ImageModel.Width, ImageModel.Height,40);
+        ImageModel.Width = sizes.Item1;
+        ImageModel.Height = sizes.Item2;
+    }
+
+    private void OnMouseUp(MouseEventArgs eventArgs)
+    {
+        StopResize();
+    }
+
+    private void OnDragStart()
+    {
+        HandleDrag(ImageModel);
+        Console.WriteLine ($"{ImageModel.Id} {ImageModel.IsDraggable}");
+    }
+
+    private void OnClick()
+    {
+        HandleClick(ImageModel);
+    }
 }

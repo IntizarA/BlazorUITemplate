@@ -8,7 +8,7 @@
 {
     <button class="draggable @ButtonModel.ButtonClass" draggable="true"
             
-            @ondragstart="@(() => OnDragStart (ButtonModel))">
+            @ondragstart="@(() => OnDragStart ())">
         @ButtonModel.Name
     </button>
 }
@@ -36,12 +36,6 @@ else
 
     [Parameter] public ButtonModel ButtonModel { get; set; }
 
-    protected override void OnInitialized ()
-    {
-        base.OnInitialized ();
-        Console.WriteLine ("unexpected color change");
-    }
-
     private void StartResize (MouseEventArgs eventArgs, string resizer)
     {
         Resize (eventArgs, resizer, ButtonModel.Width, ButtonModel.Height);
@@ -61,9 +55,9 @@ else
         StopResize ();
     }
 
-    private void OnDragStart (ButtonModel selectedButtonModel)
+    private void OnDragStart ()
     {
-        HandleDrag (selectedButtonModel);
+        HandleDrag (ButtonModel);
     }
 
     private void OnClick ()

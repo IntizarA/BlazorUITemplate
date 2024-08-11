@@ -9,20 +9,21 @@
 {
     <input type="text" class="form-control draggable" draggable="true"
            placeholder="@InputModel.Placeholder"
-           @ondragstart="@(() => HandleDragStart (InputModel))"
+           @ondragstart="@(() => HandleDragStart ())"
            disabled/>
 }
 else
 {
     <div  class="input-parent resizable" 
           style="width:@InputModel.Width; height:@InputModel.Height;"
-          @onclick="@(() => OnClick (InputModel))"
+          @onclick="@(() => OnClick ())"
          @onmousemove="OnMouseMove"
          @onmouseleave="OnMouseMove"
          @onmouseout="OnMouseMove">
-        <input type="text"  class="dashboard-input form-control"
+        <input type="text"  class="dashboard-input"
                style="width:@InputModel.Width; height:@InputModel.Height;"
-               placeholder="@InputModel.Placeholder" @bind="SizeInput" @oninput="UpdateSize" disabled/>
+               placeholder="@InputModel.Placeholder" @bind="SizeInput" @oninput="UpdateSize" 
+               >
         
             <div class="resizer top" @onmousedown='(e) => StartResize (e, "top")'></div>
             <div class="resizer right" @onmousedown='(e) => StartResize (e, "right")'></div>
@@ -76,15 +77,15 @@ else
         StopResize ();
     }
 
-    private void HandleDragStart (InputModel selectedInputModel)
+    private void HandleDragStart ()
     {
-        HandleDrag (selectedInputModel);
+        HandleDrag (InputModel);
     }
 
 
-    private void OnClick (InputModel selectedInputModel)
+    private void OnClick ()
     {
-        HandleClick (selectedInputModel);
+        HandleClick (InputModel);
     }
 
 }
