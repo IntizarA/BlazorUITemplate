@@ -1,0 +1,109 @@
+﻿@using BlazorUITemplate.Services
+@using BlazorUITemplate.Data
+@using BlazorUITemplate.Enums
+@inject EventService EventService
+
+@code {
+    [Parameter] public BaseModel BaseModel { get; set; }
+    private bool isResizing;
+    private string currentResizer = "";
+    private double startX, startY, startWidth, startHeight;
+    
+
+    protected override void OnInitialized ()
+    {
+        EventService.OnMouseUpGlobal += HandleGlobalMouseUpGlobalEvent;
+    }
+
+    public void Dispose ()
+    {
+        EventService.OnMouseUpGlobal -= HandleGlobalMouseUpGlobalEvent;
+    }
+
+    private void HandleGlobalMouseUpGlobalEvent (MouseEventArgs eventArgs)
+    {
+        Console.WriteLine ("Global Mouse Up Detected");
+        StopResize ();
+    }
+
+    protected void Resize (MouseEventArgs eventArgs, string resizer, string width, string height)
+    {
+        isResizing = true;
+        currentResizer = resizer;
+        startX = eventArgs.ClientX;
+        startY = eventArgs.ClientY;
+        startWidth = double.Parse (width.Replace ("px", ""));
+        startHeight = double.Parse (height.Replace ("px", ""));
+    }
+
+    protected (string, string) MouseMove (MouseEventArgs eventArgs, string width, string height, double minWidth = 150, double minHeight = 40)
+    {
+        if (isResizing)
+        {
+            Console.WriteLine ("isResizing");
+            double newWidth = startWidth;
+            double newHeight = startHeight;
+
+            if (currentResizer.Contains ("right"))
+            {
+                newWidth = startWidth + (eventArgs.ClientX - startX);
+                if (newWidth < minWidth)
+                {
+                    newWidth = minWidth;
+                }
+            }
+
+            if (currentResizer.Contains ("left"))
+            {
+                newWidth = startWidth - (eventArgs.ClientX - startX);
+                if (newWidth < minWidth)
+                {
+                    newWidth = minWidth;
+                }
+            }
+
+            if (currentResizer.Contains ("bottom"))
+            {
+                newHeight = startHeight + (eventArgs.ClientY - startY);
+                if (newHeight < minHeight)
+                {
+                    newHeight = minHeight;
+                }
+            }
+
+            if (currentResizer.Contains ("top"))
+            {
+                newHeight = startHeight - (eventArgs.ClientY - startY);
+                if (newHeight < minHeight)
+                {
+                    newHeight = minHeight;
+                }
+            }
+
+            width = $"{newWidth}px";
+            height = $"{newHeight}px";
+        }
+
+        return (width, height);
+    }
+
+    protected void StopResize ()
+    {
+        isResizing = false;
+        currentResizer = "";
+    }
+
+    protected void HandleDrag<T> (T model) where T : BaseModel
+    {
+        EventService.OnDragEvent (model);
+    }
+
+    protected void HandleClick (ComponentType type, Guid? id) 
+    {
+        if (id == null)
+            return;
+        Console.WriteLine (id);
+        EventService.OnGetComponentEvent (type,id);
+    }
+
+}

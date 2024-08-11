@@ -14,16 +14,11 @@
     
     private async Task ClearAll()
     {
-        await EventService.OnRaiseClearAllEvent();
+        await EventService.OnClearAllEvent();
     }
 
-    private async Task ClearSelected()
+    private void ClearSelected()
     {
-        await EventService.OnRaiseRemoveSelectedEvent ();
-        /*ButtonModel? model=Buttons.FirstOrDefault (x => x.Id != null && x.Id == Container.DraggedButton.Id);
-        if(model!=null)
-            Buttons.Remove (model);
-        // Implement your logic to clear selected buttons
-        Console.WriteLine("Selected buttons cleared");*/
+        EventService.OnRemoveSelectedEvent ();
     }
 }

@@ -3,10 +3,11 @@
 @using BlazorUITemplate.Pages
 @using BlazorUITemplate.Services
 @inject EventService EventService
+@inherits BaseComponent
 
-@if (canDraggable)
+@if (InputModel.Id==null)
 {
-    <input type="text" class="@draggable" draggable="true"
+    <input type="text" class="form-control draggable" draggable="true"
            placeholder="@InputModel.Placeholder"
            @onclick="@(() => HandleClick (InputModel))"
            @ondragstart="@(() => HandleDragStart (InputModel))"
@@ -14,16 +15,14 @@
 }
 else
 {
-    <div class="dashboard-button  @resizable" style="width:@Width; height:@Height; "
+    <div  class="input-parent resizable" 
+         style="width:@Width; height:@Height;"
          @onmousemove="OnMouseMove"
-                        @onmouseleave="OnMouseMove"
-                        @onmouseout="OnMouseMove">
-        <input type="text" 
-               style="width:@Width; height:@Height; 
-               background-color: @inputColor"
-                 placeholder="@InputModel.Placeholder">
-        @if (CanResize)
-        {
+         @onmouseleave="OnMouseMove"
+         @onmouseout="OnMouseMove">
+        <input type="text"  class="dashboard-input"
+               style="width:@Width; height:@Height;"
+                 placeholder="@InputModel.Placeholder" @bind="SizeInput" @oninput="UpdateSize" disabled>
             <div class="resizer top" @onmousedown='(e) => StartResize (e, "top")'></div>
             <div class="resizer right" @onmousedown='(e) => StartResize (e, "right")'></div>
             <div class="resizer bottom" @onmousedown='(e) => StartResize (e, "bottom")'></div>
@@ -32,130 +31,64 @@ else
             <div class="resizer top-right" @onmousedown='(e) => StartResize (e, "top-right")'></div>
             <div class="resizer bottom-left" @onmousedown='(e) => StartResize (e, "bottom-left")'></div>
             <div class="resizer bottom-right" @onmousedown='(e) => StartResize (e, "bottom-right")'></div>
-        }
     </div>
 }
 
 @code {
-    private ElementReference inputRef;
-    private string inputColor;
-
-    #region Test Resize
-
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    
+    [Parameter] public InputModel InputModel { get; set; }
+    
     [Parameter] public string Width { get; set; } = "150px";
     [Parameter] public string Height { get; set; } = "40px";
-    [Parameter] public string resizable { get; set; } = "100px";
-    [Parameter] public bool CanResize { get; set; } = true;
-    private bool canDraggable = true;
-    private bool isResizing = false;
-    private string currentResizer = "";
-    private double startX, startY, startWidth, startHeight;
+    [Parameter] public string InputClass { get; set; } = "";
 
-    protected override void OnInitialized ()
+    
+    private string SizeInput
     {
-        inputColor = ColorGenerator.GenerateRandomColor ();
-        EventService.OnMouseUp += HandleGlobalMouseUpEvent;
-
-        canDraggable = InputModel.Id == null;
-        draggable = InputModel.Id == null ? "draggable" : "";
-
-        CanResize = InputModel.Id != null;
-        resizable = InputModel.Id != null ? "resizable" : "";
-        Console.WriteLine ($"Can resize initialized:{CanResize}");
-    }
-
-    public void Dispose ()
-    {
-        EventService.OnMouseUp -= HandleGlobalMouseUpEvent;
-    }
-
-    private void StartResize (MouseEventArgs e, string resizer)
-    {
-        Console.WriteLine ("StartResize outside of if");
-        if (CanResize)
+        get => $"{Width} x {Height}";
+        set
         {
-            Console.WriteLine ("Starting resize Input");
-            isResizing = true;
-            currentResizer = resizer;
-            startX = e.ClientX;
-            startY = e.ClientY;
-            startWidth = double.Parse (Width.Replace ("px", ""));
-            startHeight = double.Parse (Height.Replace ("px", ""));
+            var sizes = value.Split('x', 'X');
+            if (sizes.Length == 2)
+            {
+                Width = sizes[0].Trim();
+                Height = sizes[1].Trim();
+            }
         }
     }
-
-    private void OnMouseMove (MouseEventArgs e)
+    
+    private void UpdateSize(ChangeEventArgs eventArgs)
     {
-        if (isResizing)
-        {
-            Console.WriteLine ("isResizing");
-            double newWidth = startWidth;
-            double newHeight = startHeight;
-
-            if (currentResizer.Contains ("right"))
-            {
-                newWidth = startWidth + (e.ClientX - startX);
-            }
-
-            if (currentResizer.Contains ("left"))
-            {
-                newWidth = startWidth - (e.ClientX - startX);
-                if (newWidth > 0)
-                {
-                    Width = $"{newWidth}px";
-                }
-            }
-
-            if (currentResizer.Contains ("bottom"))
-            {
-                newHeight = startHeight + (e.ClientY - startY);
-            }
-
-            if (currentResizer.Contains ("top"))
-            {
-                newHeight = startHeight - (e.ClientY - startY);
-                if (newHeight > 0)
-                {
-                    Height = $"{newHeight}px";
-                }
-            }
-
-            Width = $"{newWidth}px";
-            Height = $"{newHeight}px";
-            StateHasChanged ();
-        }
+        SizeInput = eventArgs.Value.ToString();
+        StateHasChanged();
+    }
+    
+    private void StartResize (MouseEventArgs eventArgs, string resizer)
+    {
+        Resize (eventArgs,resizer,Width,Height);
     }
 
-    private void OnMouseUp (MouseEventArgs e)
+    private void OnMouseMove (MouseEventArgs eventArgs)
     {
-        isResizing = false;
-        currentResizer = "";
+        var sizes=MouseMove (eventArgs, Width, Height);
+        Width = sizes.Item1;
+        Height = sizes.Item2;
     }
 
-    private void HandleGlobalMouseUpEvent (MouseEventArgs eventArgs)
+    private void OnMouseUp (MouseEventArgs eventArgs)
     {
-        Console.WriteLine ("Global Mouse Up Detected");
-        isResizing = false;
-        currentResizer = "";
+        StopResize ();
     }
-
-    #endregion
-
-    [CascadingParameter] Container Container { get; set; }
-    [Parameter] public InputModel InputModel { get; set; }
-    [Parameter] public string draggable { get; set; }
 
     private void HandleDragStart (InputModel selectedInputModel)
     {
-        Container.DraggingType = ComponentType.Input;
-        Container.DraggedInput = selectedInputModel;
+        HandleDrag (selectedInputModel);
     }
 
 
     private void HandleClick (InputModel selectedInputModel)
     {
-        //Container.ClickedButtonId = selectedButtonModel.Id;
+        HandleClick (selectedInputModel);
     }
 
 }

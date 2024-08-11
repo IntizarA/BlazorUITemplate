@@ -1,21 +1,38 @@
+using BlazorUITemplate.Data;
+using BlazorUITemplate.Enums;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorUITemplate.Services;
 
 public class EventService
 {
-	public event Func<Task> OnClearAllClick;
-	public event Func<Task> OnRemoveSelectedClick;
+	public event Action<MouseEventArgs> OnMouseUpGlobal;
+ 	
+ 	public delegate void OnDrag<T>(T model) where T : BaseModel;
+ 
+ 	public event OnDrag<BaseModel> OnDragOccured;
 
-	public event Action<MouseEventArgs> OnMouseUp;
+	public event Func<Task> OnClearAll;
+	public event Action<ComponentType,Guid?> OnGetComponent;
 
-	public async Task OnRaiseClearAllEvent ()
+	public event Func<bool> OnRemoveSelected;
+
+	public void OnRemoveSelectedEvent ()
+	{
+		OnRemoveSelected.Invoke ();
+	}
+
+	public void OnDragEvent<T> (T model) where T:BaseModel
+	{
+		OnDragOccured?.Invoke (model);
+	}
+	public async Task OnClearAllEvent ()
 	{
 		try
 		{
-			if (OnClearAllClick != null)
+			if (OnClearAll != null)
 			{
-				await OnClearAllClick.Invoke ();
+				await OnClearAll.Invoke ();
 			}
 		}
 		catch (Exception exception)
@@ -24,23 +41,13 @@ public class EventService
 		}
 	}
 
-	public async Task OnRaiseRemoveSelectedEvent ()
+	public void OnGetComponentEvent (ComponentType type, Guid? id)
 	{
-		try
-		{
-			if (OnRemoveSelectedClick != null)
-			{
-				await OnRemoveSelectedClick.Invoke ();
-			}
-		}
-		catch (Exception exception)
-		{
-			Console.WriteLine (exception.Message);
-		}
+				OnGetComponent.Invoke (type,id);
 	}
 
-	public void OnMouseUpEvent (MouseEventArgs eventArgs)
+	public void OnMouseUpGlobalEvent (MouseEventArgs eventArgs)
 	{
-		OnMouseUp.Invoke (eventArgs);
+		OnMouseUpGlobal.Invoke (eventArgs);
 	}
 }

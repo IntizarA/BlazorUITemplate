@@ -33,31 +33,21 @@
 
     protected override void OnInitialized ()
     {
-        EventService.OnClearAllClick += HandleClearAll;
-        EventService.OnRemoveSelectedClick += HandleRemoveSelected;
+        EventService.OnClearAll += HandleClearAll;
+        EventService.OnRemoveSelected += OnRemoveSelectedEventHandler;
     }
 
     public void Dispose ()
     {
-        EventService.OnClearAllClick -= HandleClearAll;
-        EventService.OnRemoveSelectedClick -= HandleRemoveSelected;
+        EventService.OnClearAll -= HandleClearAll;
+        EventService.OnRemoveSelected -= OnRemoveSelectedEventHandler;
     }
 
     #region Event Handlers
 
     private void HandleDragEnter ()
     {
-        
-        switch (Container)
-        {
-            case { DraggingType: ComponentType.Button, DraggedButton.IsDraggable: false }:
-            case { DraggingType: ComponentType.Input, DraggedInput.IsDraggable: false }:
-            case { DraggingType: ComponentType.Image, DraggedImage.IsDraggable: false }:
-                return;
-            default:
-                dropClass = "can-drop";
-                break;
-        }
+        dropClass = "can-drop";
     }
 
     private void HandleDrop ()
@@ -65,47 +55,44 @@
         switch (Container.DraggingType)
         {
             case ComponentType.Button:
-                if (!Container.DraggedButton.IsDraggable)
+                if (!Container.DraggingButton.IsDraggable)
                     return;
                 ButtonModel buttonModel = new ()
                 {
                     Id = Guid.NewGuid (),
                     IsDraggable = false,
-                    Name = Container.DraggedButton.Name,
-                    ButtonColor = Container.DraggedButton.ButtonColor
+                    Name = Container.DraggingButton.Name,
+                    ButtonColor = Container.DraggingButton.ButtonColor
                 };
                 Buttons.Add (buttonModel);
                 break;
             case ComponentType.Input:
-                if (!Container.DraggedInput.IsDraggable)
+                if (!Container.DraggingInput.IsDraggable)
                     return;
                 InputModel inputModel = new ()
                 {
                     Id = Guid.NewGuid (),
                     IsDraggable = false,
-                    Placeholder = Container.DraggedInput.Placeholder
+                    Placeholder = Container.DraggingInput.Placeholder
                 };
                 Inputs.Add (inputModel);
 
                 break;
             case ComponentType.Image:
 
-                if (!Container.DraggedImage.IsDraggable)
+                if (!Container.DraggingImage.IsDraggable)
                     return;
                 ImageModel imageModel = new ()
                 {
                     Id = Guid.NewGuid (),
                     IsDraggable = false,
-                    Url = Container.DraggedImage.Url
+                    Url = Container.DraggingImage.Url
                 };
                 Images.Add (imageModel);
                 break;
-            default:
-                dropClass = "";
-                break;
         }
 
-       
+        dropClass = "";
         StateHasChanged ();
     }
 
@@ -116,17 +103,59 @@
 
     private async Task HandleClearAll ()
     {
-        if (Container.Buttons != null)
-            Buttons.Clear ();
+        Buttons.Clear ();
+        Inputs.Clear ();
+        Images.Clear ();
         await InvokeAsync (StateHasChanged);
     }
 
-    private async Task HandleRemoveSelected ()
+    private bool OnRemoveSelectedEventHandler()
     {
-        ButtonModel? model = Buttons.FirstOrDefault (x => x.Id != null && x.Id == Container.ClickedButtonId);
-        if (model != null)
-            Buttons.Remove (model);
-        await InvokeAsync (StateHasChanged);
+        Console.WriteLine ("OnRemoveSelectedEventHandler");
+        /*switch (Container.SelectedType)
+        {
+            case ComponentType.Button:
+            {
+                Console.WriteLine ("Type is button");
+                ButtonModel? model = Buttons.FirstOrDefault(x => x.Id == Container.SelectedComponentId);
+                
+                if (model != null)
+                {
+                    Console.WriteLine ("model is not empty");
+                    Buttons.Remove(model);
+                    StateHasChanged ();
+                    return true; 
+                }
+                break;
+            }
+            case ComponentType.Input:
+            {
+                InputModel? model = Inputs.FirstOrDefault(x => x.Id == Container.SelectedComponentId);
+                if (model != null)
+                {
+                    Inputs.Remove(model);
+                    StateHasChanged ();
+                    return true; 
+                }
+                break;
+            }
+            case ComponentType.Image:
+            {
+                ImageModel? model = Images.FirstOrDefault(x => x.Id == Container.SelectedComponentId);
+                if (model != null)
+                {
+                    Images.Remove(model);
+                    StateHasChanged ();
+                    return true; 
+                }
+                break;
+            }
+            default:
+                return false; 
+        }
+        */
+
+        return false; 
     }
 
     #endregion
