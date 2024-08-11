@@ -38,10 +38,6 @@
 
     private void OnGetComponentEventHandler <T> (T model) where T:BaseModel
     {
-        if (SelectedComponent is InputModel inputModel)
-        {
-            Console.WriteLine ($"selected inp model {inputModel.Id}");
-        }
         SelectedComponent = model;
     }
 

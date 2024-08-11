@@ -1,5 +1,4 @@
 using BlazorUITemplate.Data;
-using BlazorUITemplate.Enums;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorUITemplate.Services;
