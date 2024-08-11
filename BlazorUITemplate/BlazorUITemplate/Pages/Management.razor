@@ -2,6 +2,7 @@
 @using BlazorUITemplate.Components
 @using BlazorUITemplate.Data
 @using BlazorUITemplate.Enums
+@using BlazorUITemplate.Services
 
 <Container Buttons="Buttons" Inputs="Inputs" Images="Images">
     <ToolbarList></ToolbarList>
@@ -27,13 +28,15 @@
         {
             Name = "Yellow",
             IsDraggable = true,
-            ButtonColor = ButtonColor.Yellow
+            ButtonColor = ButtonColor.Yellow,
+            ButtonClass = ButtonColorExtensions.ToCssClass (ButtonColor.Yellow)
         },
         new ButtonModel
         {
             Name = "Blue",
             IsDraggable = true,
-            ButtonColor = ButtonColor.Blue
+            ButtonColor = ButtonColor.Blue,
+            ButtonClass = ButtonColorExtensions.ToCssClass (ButtonColor.Blue)
         }
     };
 

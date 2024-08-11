@@ -12,8 +12,11 @@ public class EventService
  
  	public event OnDrag<BaseModel> OnDragOccured;
 
+ 	public delegate void OnGetComponent<T>(T model) where T : BaseModel;
+ 
+ 	public event OnGetComponent<BaseModel> OnGetComponentOccured;
+
 	public event Func<Task> OnClearAll;
-	public event Action<ComponentType,Guid?> OnGetComponent;
 
 	public event Func<bool> OnRemoveSelected;
 
@@ -26,6 +29,12 @@ public class EventService
 	{
 		OnDragOccured?.Invoke (model);
 	}
+	
+	public void OnGetComponentEvent<T> (T model) where T:BaseModel
+	{
+		OnGetComponentOccured?.Invoke (model);
+	}
+	
 	public async Task OnClearAllEvent ()
 	{
 		try
@@ -40,12 +49,7 @@ public class EventService
 			Console.WriteLine (exception.Message);
 		}
 	}
-
-	public void OnGetComponentEvent (ComponentType type, Guid? id)
-	{
-				OnGetComponent.Invoke (type,id);
-	}
-
+	
 	public void OnMouseUpGlobalEvent (MouseEventArgs eventArgs)
 	{
 		OnMouseUpGlobal.Invoke (eventArgs);

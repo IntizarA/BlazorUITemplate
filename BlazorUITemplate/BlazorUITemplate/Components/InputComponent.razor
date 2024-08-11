@@ -9,20 +9,21 @@
 {
     <input type="text" class="form-control draggable" draggable="true"
            placeholder="@InputModel.Placeholder"
-           @onclick="@(() => HandleClick (InputModel))"
            @ondragstart="@(() => HandleDragStart (InputModel))"
            disabled/>
 }
 else
 {
     <div  class="input-parent resizable" 
-         style="width:@Width; height:@Height;"
+          style="width:@InputModel.Width; height:@InputModel.Height;"
+          @onclick="@(() => OnClick (InputModel))"
          @onmousemove="OnMouseMove"
          @onmouseleave="OnMouseMove"
          @onmouseout="OnMouseMove">
-        <input type="text"  class="dashboard-input"
-               style="width:@Width; height:@Height;"
-                 placeholder="@InputModel.Placeholder" @bind="SizeInput" @oninput="UpdateSize" disabled>
+        <input type="text"  class="dashboard-input form-control"
+               style="width:@InputModel.Width; height:@InputModel.Height;"
+               placeholder="@InputModel.Placeholder" @bind="SizeInput" @oninput="UpdateSize" disabled/>
+        
             <div class="resizer top" @onmousedown='(e) => StartResize (e, "top")'></div>
             <div class="resizer right" @onmousedown='(e) => StartResize (e, "right")'></div>
             <div class="resizer bottom" @onmousedown='(e) => StartResize (e, "bottom")'></div>
@@ -38,21 +39,16 @@ else
     
     [Parameter] public InputModel InputModel { get; set; }
     
-    [Parameter] public string Width { get; set; } = "150px";
-    [Parameter] public string Height { get; set; } = "40px";
-    [Parameter] public string InputClass { get; set; } = "";
-
-    
     private string SizeInput
     {
-        get => $"{Width} x {Height}";
+        get => $"{InputModel.Width} x {InputModel.Height}";
         set
         {
             var sizes = value.Split('x', 'X');
             if (sizes.Length == 2)
             {
-                Width = sizes[0].Trim();
-                Height = sizes[1].Trim();
+                InputModel.Width = sizes[0].Trim();
+                InputModel.Height = sizes[1].Trim();
             }
         }
     }
@@ -65,14 +61,14 @@ else
     
     private void StartResize (MouseEventArgs eventArgs, string resizer)
     {
-        Resize (eventArgs,resizer,Width,Height);
+        Resize (eventArgs,resizer,InputModel.Width,InputModel.Height);
     }
 
     private void OnMouseMove (MouseEventArgs eventArgs)
     {
-        var sizes=MouseMove (eventArgs, Width, Height);
-        Width = sizes.Item1;
-        Height = sizes.Item2;
+        var sizes=MouseMove (eventArgs, InputModel.Width, InputModel.Height);
+        InputModel.Width = sizes.Item1;
+        InputModel.Height = sizes.Item2;
     }
 
     private void OnMouseUp (MouseEventArgs eventArgs)
@@ -86,7 +82,7 @@ else
     }
 
 
-    private void HandleClick (InputModel selectedInputModel)
+    private void OnClick (InputModel selectedInputModel)
     {
         HandleClick (selectedInputModel);
     }

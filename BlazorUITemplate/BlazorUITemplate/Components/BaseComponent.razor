@@ -98,12 +98,11 @@
         EventService.OnDragEvent (model);
     }
 
-    protected void HandleClick (ComponentType type, Guid? id) 
+    protected void HandleClick<T> (T model) where T : BaseModel
     {
-        if (id == null)
+        if (model.Id == null)
             return;
-        Console.WriteLine (id);
-        EventService.OnGetComponentEvent (type,id);
+        EventService.OnGetComponentEvent (model);
     }
 
 }

@@ -14,52 +14,31 @@
     [Parameter] public List<InputModel>? Inputs { get; set; }
     [Parameter] public List<ImageModel>? Images { get; set; }
     
-    public ComponentType DraggingType { get; set; }
-    public ComponentType SelectedType { get; set; }
-    [Parameter] public Guid? SelectedComponentId { get; set; }
-
-    [Parameter] public ButtonModel? DraggingButton { get; set; }
-    [Parameter] public InputModel? DraggingInput { get; set; }
-    [Parameter] public ImageModel? DraggingImage { get; set; }
+    [Parameter] public BaseModel? SelectedComponent { get; set; }
+    [Parameter] public BaseModel? DraggingComponent { get; set; }
     
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     protected override void OnInitialized ()
     {
         EventService.OnDragOccured += OnDragEventHandler;
-        EventService.OnGetComponent += OnGetComponentEventHandler;
+        EventService.OnGetComponentOccured += OnGetComponentEventHandler;
     }
     
     public void Dispose()
     {
         EventService.OnDragOccured -= OnDragEventHandler;
-        EventService.OnGetComponent -= OnGetComponentEventHandler;
+        EventService.OnGetComponentOccured -= OnGetComponentEventHandler;
     }
     
     private void OnDragEventHandler<T> (T model) where T:BaseModel
     {
-        switch (model)
-        {
-            case ButtonModel buttonModel:
-                DraggingButton = buttonModel;
-                DraggingType = ComponentType.Button;
-                break;
-            case InputModel inputModel:
-                DraggingInput=inputModel;
-                DraggingType = ComponentType.Input;
-                break;
-            case ImageModel imageModel:
-                DraggingImage=imageModel;
-                DraggingType = ComponentType.Image;
-                break;
-        }
+        DraggingComponent = model;
     }
 
-    private void OnGetComponentEventHandler (ComponentType type, Guid? id)
+    private void OnGetComponentEventHandler <T> (T model) where T:BaseModel
     {
-        SelectedType = type;
-        SelectedComponentId = id;
-        Console.WriteLine ($"type:{type} {id}");
+        SelectedComponent = model;
     }
 
 }

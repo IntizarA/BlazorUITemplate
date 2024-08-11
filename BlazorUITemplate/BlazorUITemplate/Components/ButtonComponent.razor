@@ -6,7 +6,7 @@
 @inherits BaseComponent
 @if (ButtonModel.Id == null)
 {
-    <button class="draggable @ButtonClass" draggable="true"
+    <button class="draggable @ButtonModel.ButtonClass" draggable="true"
             
             @ondragstart="@(() => OnDragStart (ButtonModel))">
         @ButtonModel.Name
@@ -14,7 +14,7 @@
 }
 else
 {
-    <button class="dashboard-button resizable @ButtonClass" style="width:@Width; height:@Height;"
+    <button class="dashboard-button resizable @ButtonModel.ButtonClass" style="width:@ButtonModel.Width; height:@ButtonModel.Height;"
             @onclick="@(() => OnClick ())"
             @onmousemove="OnMouseMove"
             @onmouseleave="OnMouseMove"
@@ -36,26 +36,22 @@ else
 
     [Parameter] public ButtonModel ButtonModel { get; set; }
 
-    [Parameter] public string Width { get; set; } = "150px";
-    [Parameter] public string Height { get; set; } = "40px";
-    [Parameter] public string ButtonClass { get; set; } = "";
-
     protected override void OnInitialized ()
     {
         base.OnInitialized ();
-        ButtonClass = ButtonModel.ButtonColor == ButtonColor.Yellow ? "btn btn-warning" : "btn btn-primary";
+        Console.WriteLine ("unexpected color change");
     }
 
     private void StartResize (MouseEventArgs eventArgs, string resizer)
     {
-        Resize (eventArgs, resizer, Width, Height);
+        Resize (eventArgs, resizer, ButtonModel.Width, ButtonModel.Height);
     }
 
     private void OnMouseMove (MouseEventArgs eventArgs)
     {
-        var size = MouseMove (eventArgs, Width, Height);
-        Width = size.Item1;
-        Height = size.Item2;
+        var size = MouseMove (eventArgs, ButtonModel.Width, ButtonModel.Height);
+        ButtonModel.Width = size.Item1;
+        ButtonModel.Height = size.Item2;
         StateHasChanged ();
     }
 
@@ -72,7 +68,7 @@ else
 
     private void OnClick ()
     {
-        HandleClick (ComponentType.Button,ButtonModel.Id);
+        HandleClick (ButtonModel);
     }
 
 

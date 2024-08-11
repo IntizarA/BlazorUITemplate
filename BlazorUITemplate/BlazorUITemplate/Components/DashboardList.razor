@@ -52,44 +52,50 @@
 
     private void HandleDrop ()
     {
-        switch (Container.DraggingType)
+        if (Container.DraggingComponent == null)
+            return;
+        if (!Container.DraggingComponent.IsDraggable)
+            return;
+
+        switch (Container.DraggingComponent)
         {
-            case ComponentType.Button:
-                if (!Container.DraggingButton.IsDraggable)
-                    return;
-                ButtonModel buttonModel = new ()
+            case ButtonModel buttonModel:
+            {
+                ButtonModel copy = new ()
                 {
                     Id = Guid.NewGuid (),
                     IsDraggable = false,
-                    Name = Container.DraggingButton.Name,
-                    ButtonColor = Container.DraggingButton.ButtonColor
+                    Name = buttonModel.Name,
+                    ButtonColor = buttonModel.ButtonColor,
+                    ButtonClass = buttonModel.ButtonClass,
+                    Width = buttonModel.Width,
+                    Height = buttonModel.Height
                 };
-                Buttons.Add (buttonModel);
+                Buttons.Add (copy);
                 break;
-            case ComponentType.Input:
-                if (!Container.DraggingInput.IsDraggable)
-                    return;
-                InputModel inputModel = new ()
+            }
+            case InputModel inputModel:
+            {
+                InputModel copy = new ()
                 {
                     Id = Guid.NewGuid (),
                     IsDraggable = false,
-                    Placeholder = Container.DraggingInput.Placeholder
+                    Placeholder = inputModel.Placeholder
                 };
-                Inputs.Add (inputModel);
-
+                Inputs.Add (copy);
                 break;
-            case ComponentType.Image:
-
-                if (!Container.DraggingImage.IsDraggable)
-                    return;
-                ImageModel imageModel = new ()
+            }
+            case ImageModel imageModel:
+            {
+                ImageModel copy = new ()
                 {
                     Id = Guid.NewGuid (),
                     IsDraggable = false,
-                    Url = Container.DraggingImage.Url
+                    Url = imageModel.Url
                 };
-                Images.Add (imageModel);
+                Images.Add (copy);
                 break;
+            }
         }
 
         dropClass = "";
@@ -111,51 +117,44 @@
 
     private bool OnRemoveSelectedEventHandler()
     {
-        Console.WriteLine ("OnRemoveSelectedEventHandler");
-        /*switch (Container.SelectedType)
+        switch (Container.SelectedComponent)
         {
-            case ComponentType.Button:
+            case ButtonModel buttonModel:
             {
-                Console.WriteLine ("Type is button");
-                ButtonModel? model = Buttons.FirstOrDefault(x => x.Id == Container.SelectedComponentId);
-                
-                if (model != null)
+                var button=Buttons.FirstOrDefault(x=>x.Id==buttonModel.Id);
+                if(button!=null)
                 {
-                    Console.WriteLine ("model is not empty");
-                    Buttons.Remove(model);
+                    Buttons.Remove (button);
                     StateHasChanged ();
-                    return true; 
                 }
-                break;
-            }
-            case ComponentType.Input:
-            {
-                InputModel? model = Inputs.FirstOrDefault(x => x.Id == Container.SelectedComponentId);
-                if (model != null)
-                {
-                    Inputs.Remove(model);
-                    StateHasChanged ();
-                    return true; 
-                }
-                break;
-            }
-            case ComponentType.Image:
-            {
-                ImageModel? model = Images.FirstOrDefault(x => x.Id == Container.SelectedComponentId);
-                if (model != null)
-                {
-                    Images.Remove(model);
-                    StateHasChanged ();
-                    return true; 
-                }
-                break;
-            }
-            default:
-                return false; 
-        }
-        */
 
-        return false; 
+                break;
+            }
+            case InputModel inputModel:
+            {
+                var input=Inputs.FirstOrDefault(x=>x.Id==inputModel.Id);
+                if(input!=null)
+                {
+                    Inputs.Remove (input);
+                    StateHasChanged ();
+                }
+
+                break;
+            }
+            case ImageModel imageModel:
+            {
+                var image=Images.FirstOrDefault(x=>x.Id==imageModel.Id);
+                if(image!=null)
+                {
+                    Images.Remove (image);
+                    StateHasChanged ();
+                }
+
+                break;
+            }
+        }
+
+        return false;
     }
 
     #endregion
