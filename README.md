@@ -1,4 +1,4 @@
-Drag-Drop and Resize Logics for button/input/image
+Drag-Drop and Resize Logics for button/input/image without JavaScript
 
 ![image](https://github.com/user-attachments/assets/60b26cbf-b7ac-4ff0-81ed-6c6dccef1bf6)
 
